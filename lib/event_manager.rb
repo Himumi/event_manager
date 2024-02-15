@@ -3,7 +3,11 @@ require 'google/apis/civicinfo_v2'
 require 'erb'
 require 'time'
 
+puts 'Event manager Initialized!'
+puts ""
 
+template_letter = File.read('form_letter.erb')
+erb_template = ERB.new template_letter
 
 def clean_zipcode(zipcode)
   zipcode.to_s.rjust(5, '0')[0..4]
@@ -46,12 +50,19 @@ def take_hour(dates)
   DateTime.strptime(dates, '%m/%d/%Y %H:%M').hour
 end
 
-def most_hour(values)
+def most_value(values)
   max = values.tally.values.max
   values.tally.select { |key, value| value == max }.keys
 end
-puts 'Event manager Initialized!'
-puts ""
+
+def get_days(day)
+  days = ["Subday", "Monday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
+  days[day]
+end
+
+def take_day(dates)
+  DateTime.strptime(dates, '%m/%d/%Y %H:%M').wday
+end
 
 def contents 
   CSV.open(
@@ -60,9 +71,6 @@ def contents
   header_converters: :symbol
   )
 end
-
-template_letter = File.read('form_letter.erb')
-erb_template = ERB.new template_letter
 
 def write_letter
   contents.each do |row|
@@ -91,7 +99,19 @@ def get_most_visited_hour
     # p hours
   end
   # hours.tally
-  most_hour(hours).each { |item| puts "The most visited hour is #{item}:00" }
+  most_value(hours).each { |item| puts "The most visited hour is #{item}:00" }
 end
 
 get_most_visited_hour
+
+def get_most_visited_day
+  days = []
+  contents.each do |row|
+    days.push(take_day(row[:regdate]))
+    # p days
+  end
+  # days.tally
+  most_value(days).each { |item| puts "The most visited day is #{get_days(item)}" }
+end
+
+get_most_visited_day
