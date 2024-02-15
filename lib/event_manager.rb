@@ -1,7 +1,7 @@
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
-require 'time'
+# require 'time'
 
 puts 'Event manager Initialized!'
 puts ""
@@ -55,13 +55,8 @@ def most_value(values)
   values.tally.select { |key, value| value == max }.keys
 end
 
-def get_days(day)
-  days = ["Subday", "Monday", "Tuesday", "Wednesday", "Thurday", "Friday", "Saturday"]
-  days[day]
-end
-
 def take_day(dates)
-  DateTime.strptime(dates, '%m/%d/%Y %H:%M').wday
+  DateTime.strptime(dates, '%m/%d/%Y %H:%M').strftime("%A")
 end
 
 def contents 
@@ -111,7 +106,7 @@ def get_most_visited_day
     # p days
   end
   # days.tally
-  most_value(days).each { |item| puts "The most visited day is #{get_days(item)}" }
+  most_value(days).each { |item| puts "The most visited day is #{item}" }
 end
 
 get_most_visited_day
