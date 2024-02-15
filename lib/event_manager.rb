@@ -1,13 +1,9 @@
 require 'csv'
 require 'google/apis/civicinfo_v2'
 require 'erb'
-# require 'time'
 
 puts 'Event manager Initialized!'
 puts ""
-
-template_letter = File.read('form_letter.erb')
-erb_template = ERB.new template_letter
 
 def clean_zipcode(zipcode)
   zipcode.to_s.rjust(5, '0')[0..4]
@@ -68,6 +64,9 @@ def contents
 end
 
 def write_letter
+  template_letter = File.read('form_letter.erb')
+  erb_template = ERB.new template_letter
+  
   contents.each do |row|
     id = row[0]
     name = row[:first_name]
