@@ -42,6 +42,14 @@ def phone_numbers(phone_number)
   number
 end
 
+def take_hour(dates)
+  DateTime.strptime(dates, '%m/%d/%Y %H:%M').hour
+end
+
+def most_hour(values)
+  max = values.tally.values.max
+  values.tally.select { |key, value| value == max }.keys
+end
 puts 'Event manager Initialized!'
 puts ""
 
@@ -75,3 +83,15 @@ def get_phone_number
 end
 
 get_phone_number
+
+def get_most_visited_hour
+  hours = []
+  contents.each do |row|
+    hours.push(take_hour(row[:regdate]))
+    # p hours
+  end
+  # hours.tally
+  most_hour(hours).each { |item| puts "The most visited hour is #{item}:00" }
+end
+
+get_most_visited_hour
