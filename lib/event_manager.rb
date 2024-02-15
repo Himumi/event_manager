@@ -46,13 +46,13 @@ def take_hour(dates)
   DateTime.strptime(dates, '%m/%d/%Y %H:%M').hour
 end
 
+def take_day(dates)
+  DateTime.strptime(dates, '%m/%d/%Y %H:%M').strftime("%A")
+end
+
 def most_value(values)
   max = values.tally.values.max
   values.tally.select { |key, value| value == max }.keys
-end
-
-def take_day(dates)
-  DateTime.strptime(dates, '%m/%d/%Y %H:%M').strftime("%A")
 end
 
 def contents 
@@ -66,7 +66,7 @@ end
 def write_letter
   template_letter = File.read('form_letter.erb')
   erb_template = ERB.new template_letter
-  
+
   contents.each do |row|
     id = row[0]
     name = row[:first_name]
@@ -78,21 +78,14 @@ def write_letter
 end
 
 def get_phone_number
-  contents.each do |row|
-    phone = phone_numbers(row[:homephone])
-    puts phone
-  end
+  contents.each { |row| puts phone_numbers(row[:homephone])}
 end
 
 get_phone_number
 
 def get_most_visited_hour
   hours = []
-  contents.each do |row|
-    hours.push(take_hour(row[:regdate]))
-    # p hours
-  end
-  # hours.tally
+  contents.each { |row| hours.push(take_hour(row[:regdate]))}
   most_value(hours).each { |item| puts "The most visited hour is #{item}:00" }
 end
 
@@ -100,11 +93,7 @@ get_most_visited_hour
 
 def get_most_visited_day
   days = []
-  contents.each do |row|
-    days.push(take_day(row[:regdate]))
-    # p days
-  end
-  # days.tally
+  contents.each { |row| days.push(take_day(row[:regdate])) }
   most_value(days).each { |item| puts "The most visited day is #{item}" }
 end
 
